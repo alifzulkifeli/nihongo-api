@@ -40,7 +40,7 @@ def home():
 
 @app.route('/add', methods=["GET", "POST"])
 def add():
-    books = None
+    book = None
     if request.json:
         try:
             book = Book(word=request.json['word'], meaning=request.json['meaning'],
