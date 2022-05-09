@@ -2,9 +2,12 @@ import os
 from flask import Flask
 from flask import request
 from flask_sqlalchemy import SQLAlchemy
-from flask import Response
+from flask_cors import CORS
+import random
+
 
 app = Flask(__name__)
+CORS(app)
 project_dir = os.path.dirname(os.path.abspath(__file__))
 database_file = "sqlite:///{}".format(os.path.join(project_dir, "nihongo.db"))
 app.config["SQLALCHEMY_DATABASE_URI"] = database_file
@@ -67,6 +70,11 @@ def read():
             print(e)
             return(("Failed to add")), 400
 
+@app.route('/random', methods=["GET"])
+def rando():
+    rand = random.randrange(0, db.session.query(Book).count()) 
+    row = db.session.query(Book)[rand]
+    return (row.toDict())
 
 @app.route("/update", methods=["POST"])
 def update():
@@ -99,4 +107,4 @@ def delete():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0', debug=True)
+    app.run(host='0.0.0.0', ssl_context=('cert.pem', 'key.pem'))
